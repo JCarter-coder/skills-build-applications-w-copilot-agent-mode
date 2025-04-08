@@ -1,20 +1,28 @@
+import logging
 from django.core.management.base import BaseCommand
 from octofit_tracker.models import User, Team, Activity, Leaderboard, Workout
 from bson import ObjectId
 from datetime import timedelta
+
+# Configure logging
+logging.basicConfig(level=logging.DEBUG)
+logger = logging.getLogger(__name__)
 
 class Command(BaseCommand):
     help = 'Populate the database with test data for users, teams, activities, leaderboard, and workouts'
 
     def handle(self, *args, **kwargs):
         # Clear existing data
+        logger.debug('Clearing existing data...')
         User.objects.all().delete()
         Team.objects.all().delete()
         Activity.objects.all().delete()
         Leaderboard.objects.all().delete()
         Workout.objects.all().delete()
+        logger.debug('Existing data cleared.')
 
         # Create users
+        logger.debug('Creating users...')
         users = [
             User(_id=ObjectId(), username='thundergod', email='thundergod@mhigh.edu', password='password1'),
             User(_id=ObjectId(), username='metalgeek', email='metalgeek@mhigh.edu', password='password2'),
@@ -23,16 +31,20 @@ class Command(BaseCommand):
             User(_id=ObjectId(), username='sleeptoken', email='sleeptoken@mhigh.edu', password='password5'),
         ]
         User.objects.bulk_create(users)
+        logger.debug('Users created.')
 
         # Create teams
+        logger.debug('Creating teams...')
         team1 = Team(_id=ObjectId(), name='Blue Team')
         team2 = Team(_id=ObjectId(), name='Gold Team')
         team1.save()
         team2.save()
         team1.members.add(users[0], users[1])
         team2.members.add(users[2], users[3], users[4])
+        logger.debug('Teams created.')
 
         # Create activities
+        logger.debug('Creating activities...')
         activities = [
             Activity(_id=ObjectId(), user=users[0], activity_type='Cycling', duration=timedelta(hours=1)),
             Activity(_id=ObjectId(), user=users[1], activity_type='Crossfit', duration=timedelta(hours=2)),
@@ -41,8 +53,10 @@ class Command(BaseCommand):
             Activity(_id=ObjectId(), user=users[4], activity_type='Swimming', duration=timedelta(hours=1, minutes=15)),
         ]
         Activity.objects.bulk_create(activities)
+        logger.debug('Activities created.')
 
         # Create leaderboard entries
+        logger.debug('Creating leaderboard entries...')
         leaderboard_entries = [
             Leaderboard(_id=ObjectId(), user=users[0], score=100),
             Leaderboard(_id=ObjectId(), user=users[1], score=90),
@@ -51,8 +65,10 @@ class Command(BaseCommand):
             Leaderboard(_id=ObjectId(), user=users[4], score=80),
         ]
         Leaderboard.objects.bulk_create(leaderboard_entries)
+        logger.debug('Leaderboard entries created.')
 
         # Create workouts
+        logger.debug('Creating workouts...')
         workouts = [
             Workout(_id=ObjectId(), name='Cycling Training', description='Training for a road cycling event'),
             Workout(_id=ObjectId(), name='Crossfit', description='Training for a crossfit competition'),
@@ -61,5 +77,6 @@ class Command(BaseCommand):
             Workout(_id=ObjectId(), name='Swimming Training', description='Training for a swimming competition'),
         ]
         Workout.objects.bulk_create(workouts)
+        logger.debug('Workouts created.')
 
         self.stdout.write(self.style.SUCCESS('Successfully populated the database with test data.'))
