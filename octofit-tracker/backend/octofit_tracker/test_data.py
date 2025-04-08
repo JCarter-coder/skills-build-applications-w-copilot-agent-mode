@@ -1,38 +1,47 @@
-# Test data for populating the octofit_db database
+from datetime import timedelta
+from bson import ObjectId
 
-test_users = [
-    {"username": "thundergod", "email": "thundergod@mhigh.edu", "password": "thundergodpassword"},
-    {"username": "metalgeek", "email": "metalgeek@mhigh.edu", "password": "metalgeekpassword"},
-    {"username": "zerocool", "email": "zerocool@mhigh.edu", "password": "zerocoolpassword"},
-    {"username": "crashoverride", "email": "crashoverride@mhigh.edu", "password": "crashoverridepassword"},
-    {"username": "sleeptoken", "email": "sleeptoken@mhigh.edu", "password": "sleeptokenpassword"},
-]
+def get_test_data():
+    users = [
+        {"_id": ObjectId(), "username": "thundergod", "email": "thundergod@mhigh.edu", "password": "thundergodpassword"},
+        {"_id": ObjectId(), "username": "metalgeek", "email": "metalgeek@mhigh.edu", "password": "metalgeekpassword"},
+        {"_id": ObjectId(), "username": "zerocool", "email": "zerocool@mhigh.edu", "password": "zerocoolpassword"},
+        {"_id": ObjectId(), "username": "crashoverride", "email": "crashoverride@hmhigh.edu", "password": "crashoverridepassword"},
+        {"_id": ObjectId(), "username": "sleeptoken", "email": "sleeptoken@mhigh.edu", "password": "sleeptokenpassword"},
+    ]
 
-test_teams = [
-    {"name": "Blue Team"},
-    {"name": "Gold Team"},
-]
+    teams = [
+        {"_id": ObjectId(), "name": "Blue Team", "members": [users[0]["_id"], users[1]["_id"]]},
+        {"_id": ObjectId(), "name": "Gold Team", "members": [users[2]["_id"], users[3]["_id"], users[4]["_id"]]},
+    ]
 
-test_activities = [
-    {"activity_type": "Cycling", "duration": "01:00:00"},
-    {"activity_type": "Crossfit", "duration": "02:00:00"},
-    {"activity_type": "Running", "duration": "01:30:00"},
-    {"activity_type": "Strength", "duration": "00:30:00"},
-    {"activity_type": "Swimming", "duration": "01:15:00"},
-]
+    activities = [
+        {"_id": ObjectId(), "user": users[0]["_id"], "activity_type": "Cycling", "duration": timedelta(hours=1)},
+        {"_id": ObjectId(), "user": users[1]["_id"], "activity_type": "Crossfit", "duration": timedelta(hours=2)},
+        {"_id": ObjectId(), "user": users[2]["_id"], "activity_type": "Running", "duration": timedelta(hours=1, minutes=30)},
+        {"_id": ObjectId(), "user": users[3]["_id"], "activity_type": "Strength", "duration": timedelta(minutes=30)},
+        {"_id": ObjectId(), "user": users[4]["_id"], "activity_type": "Swimming", "duration": timedelta(hours=1, minutes=15)},
+    ]
 
-test_leaderboard = [
-    {"score": 100},
-    {"score": 90},
-    {"score": 95},
-    {"score": 85},
-    {"score": 80},
-]
+    leaderboard = [
+        {"_id": ObjectId(), "user": users[0]["_id"], "score": 100},
+        {"_id": ObjectId(), "user": users[1]["_id"], "score": 90},
+        {"_id": ObjectId(), "user": users[2]["_id"], "score": 95},
+        {"_id": ObjectId(), "user": users[3]["_id"], "score": 85},
+        {"_id": ObjectId(), "user": users[4]["_id"], "score": 80},
+    ]
 
-test_workouts = [
-    {"name": "Cycling Training", "description": "Training for a road cycling event"},
-    {"name": "Crossfit", "description": "Training for a crossfit competition"},
-    {"name": "Running Training", "description": "Training for a marathon"},
-    {"name": "Strength Training", "description": "Training for strength"},
-    {"name": "Swimming Training", "description": "Training for a swimming competition"},
-]
+    workouts = [
+        {"_id": ObjectId(), "name": "Crossfit", "description": "Training for a crossfit competition"},
+        {"_id": ObjectId(), "name": "Running Training", "description": "Training for a marathon"},
+        {"_id": ObjectId(), "name": "Strength Training", "description": "Training for strength"},
+        {"_id": ObjectId(), "name": "Swimming Training", "description": "Training for a swimming competition"},
+    ]
+
+    return {
+        "users": users,
+        "teams": teams,
+        "activities": activities,
+        "leaderboard": leaderboard,
+        "workouts": workouts,
+    }
